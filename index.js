@@ -113,7 +113,7 @@ var typeMap = {
   }
 }
 
-function inject ($, process, base, cb, opts, relative, ignoredFiles) {
+function inject ($, process, processopts, base, cb, opts, relative, ignoredFiles) {
   var items = []
 
   if (!process) {
@@ -139,8 +139,8 @@ function inject ($, process, base, cb, opts, relative, ignoredFiles) {
       var file = path.join(src[0] === '/' ? base : relative, src)
 
       if (fs.existsSync(file) && ignoredFiles.indexOf(src) === -1) {
-        gulp.src(file)
-          .pipe(process())
+        gulp.src(file)	
+          .pipe(process(processopts))
           .pipe(replace(el, opts.template))
           .pipe(through.obj(function (file, enc, cb) {
             cb()
@@ -176,7 +176,7 @@ function inline (opts) {
 
     typeKeys.forEach(function (type) {
       if (opts.disabledTypes.indexOf(type) === -1) {
-        inject($, opts[type], opts.base, done, typeMap[type], path.dirname(file.path), opts.ignore)
+        inject($, opts[type], opts[type +"opts"], opts.base, done, typeMap[type], path.dirname(file.path), opts.ignore)
       } else {
         done()
       }
